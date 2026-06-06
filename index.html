@@ -508,14 +508,7 @@ function clearNewBadge() { newWordKeys.clear(); saveWords(); renderList(); }
 function toggleMastered(i) { words[i].mastered = !words[i].mastered; saveWords(); renderList(); toast(words[i].mastered?'✅ 습득 완료!':'❌ 학습 중으로 변경'); }
 function deleteWord(i) {
   if(!confirm(`"${words[i].word}" 삭제할까요?`)) return;
-  const key = words[i].word.toLowerCase();
-  // 삭제 목록에 추가 → 새로고침해도 EMBEDDED에서 복구 안 됨
-  deletedKeys.add(key);
-  // 사용자 추가 단어 목록에서도 제거
-  const userAdded = JSON.parse(localStorage.getItem(LS_ADDED_KEY) || '[]')
-    .filter(w => w.word.toLowerCase() !== key);
-  localStorage.setItem(LS_ADDED_KEY, JSON.stringify(userAdded));
-  words.splice(i,1);
+  words.splice(i, 1);
   saveWords(); renderList(); toast('삭제 완료');
 }
 
