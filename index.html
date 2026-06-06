@@ -347,55 +347,77 @@ const EMBEDDED_WORDS = [
 //       EMBEDDED_WORDS = 첫 실행 시 초기화 + Claude가 새 단어 추가할 때만 감지
 //       → 삭제한 단어는 절대 복구되지 않음
 // ============================================================
-// ── localStorage 키 ──────────────────────────────────────────
-const LS_WORDS   = 'alice_v3_words';   // 단어 목록 (유일한 진실의 원천)
-const LS_SEEN    = 'alice_v3_seen';    // Claude가 추가한 단어 중 이미 반영된 것
-const LS_NEW     = 'alice_v3_new';     // 🆕 배지 표시용
+// ============================================================
+// FIREBASE 설정
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyC48iZY_ERHz1C-HATQDy1_Cr7R57Nnz6g",
+  authDomain: "alice-vocabulary-21400.firebaseapp.com",
+  projectId: "alice-vocabulary-21400",
+  storageBucket: "alice-vocabulary-21400.firebasestorage.app",
+  messagingSenderId: "100305173082",
+  appId: "1:100305173082:web:36692e5dfec4e3d7f5f663"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+// 오프라인 캐시 활성화 (앱 닫혀도 최신 데이터 유지)
+db.enablePersistence().catch(() => {});
+const DOC = db.collection('alice').doc('vocabulary');
 
 let words = [];
 let newWordKeys = new Set();
 
-function loadWords() {
-  let seenEmbedded = new Set();
-  try { seenEmbedded = new Set(JSON.parse(localStorage.getItem(LS_SEEN) || '[]')); } catch {}
-  try { newWordKeys  = new Set(JSON.parse(localStorage.getItem(LS_NEW)  || '[]')); } catch {}
+async function loadWords() {
+  try {
+    const snap = await DOC.get();
+    if (!snap.exists) {
+      // ── 첫 실행: EMBEDDED_WORDS로 Firestore 초기화 ──
+      words = EMBEDDED_WORDS.map(w => ({...w}));
+      const seenArr = words.map(w => w.word.toLowerCase());
+      await DOC.set({ words, seenEmbedded: seenArr, newWordKeys: [] });
+    } else {
+      const data = snap.data();
+      words = data.words || [];
+      const seenEmbedded = new Set(data.seenEmbedded || []);
+      newWordKeys = new Set(data.newWordKeys || []);
 
-  const saved = (() => { try { return JSON.parse(localStorage.getItem(LS_WORDS)); } catch { return null; } })();
-
-  if (saved === null) {
-    // ── 첫 실행: EMBEDDED_WORDS 그대로 복사 ──
-    words = EMBEDDED_WORDS.map(w => ({...w}));
-    seenEmbedded = new Set(words.map(w => w.word.toLowerCase()));
-  } else {
-    // ── 이후: localStorage가 전부. EMBEDDED는 '새 단어 감지'만 사용 ──
-    words = saved;
-    const existingKeys = new Set(words.map(w => w.word.toLowerCase()));
-    EMBEDDED_WORDS.forEach(ew => {
-      const key = ew.word.toLowerCase();
-      if (!seenEmbedded.has(key)) {
-        seenEmbedded.add(key);
-        if (!existingKeys.has(key)) {     // 아직 없는 단어만 추가
-          words.push({...ew});
-          newWordKeys.add(key);
+      // Claude가 새로 추가한 단어 감지
+      const existingKeys = new Set(words.map(w => w.word.toLowerCase()));
+      let changed = false;
+      EMBEDDED_WORDS.forEach(ew => {
+        const key = ew.word.toLowerCase();
+        if (!seenEmbedded.has(key)) {
+          seenEmbedded.add(key);
+          if (!existingKeys.has(key)) {
+            words.push({...ew});
+            newWordKeys.add(key);
+            changed = true;
+          }
         }
+      });
+      if (changed) {
+        await DOC.update({ words, seenEmbedded: [...seenEmbedded], newWordKeys: [...newWordKeys] });
       }
-    });
+    }
+  } catch(e) {
+    console.error('Firebase 로드 오류:', e);
   }
-
-  localStorage.setItem(LS_SEEN, JSON.stringify([...seenEmbedded]));
-  saveWords();
+  document.getElementById('loading').style.display = 'none';
+  renderAll();
 }
 
 function saveWords() {
-  localStorage.setItem(LS_WORDS, JSON.stringify(words));
-  localStorage.setItem(LS_NEW,   JSON.stringify([...newWordKeys]));
+  // 백그라운드 저장 (UI를 막지 않음)
+  DOC.update({ words, newWordKeys: [...newWordKeys] }).catch(console.error);
 }
 
 function clearAllWords() {
-  [LS_WORDS, LS_SEEN, LS_NEW].forEach(k => localStorage.removeItem(k));
+  if(!confirm('모든 단어를 삭제할까요?')) return;
   newWordKeys = new Set();
   words = EMBEDDED_WORDS.map(w => ({...w}));
-  saveWords(); renderAll(); toast('초기화 완료');
+  const seenArr = words.map(w => w.word.toLowerCase());
+  DOC.set({ words, seenEmbedded: seenArr, newWordKeys: [] }).catch(console.error);
+  renderAll(); toast('초기화 완료');
 }
 
 // ============================================================
