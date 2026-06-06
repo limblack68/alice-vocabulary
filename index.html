@@ -487,6 +487,43 @@ function clearAllWords() {
 }
 
 // ============================================================
+// WEEK FILTER (공통)
+// ============================================================
+let currentWeek = 'all'; // 전체 선택 기본값
+
+function getWeeks() {
+  const set = new Set();
+  words.forEach(w => { if(w.week) set.add(String(w.week)); });
+  return ['all', ...Array.from(set).sort((a,b) => Number(a)-Number(b)), '기타'];
+}
+
+function renderWeekTabs(containerId, onSelect) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const weeks = getWeeks();
+  el.innerHTML = weeks.map(w => {
+    const label = w === 'all' ? '전체' : w === '기타' ? '기타' : `Week ${w}`;
+    return `<button class="week-tab ${currentWeek===w?'active':''}" onclick="setWeek('${w}','${containerId}')">${label}</button>`;
+  }).join('');
+}
+
+function setWeek(w, fromId) {
+  currentWeek = w;
+  ['listWeekTabs','flashWeekTabs','quizWeekTabs'].forEach(id => renderWeekTabs(id));
+  if(fromId==='listWeekTabs') renderList();
+}
+
+function filterByWeek(list) {
+  if(currentWeek === 'all') return list;
+  if(currentWeek === '기타') return list.filter(w => !w.week || w.week === '기타');
+  return list.filter(w => String(w.week) === currentWeek);
+}
+
+function refreshWeekTabs() {
+  ['listWeekTabs','flashWeekTabs','quizWeekTabs'].forEach(id => renderWeekTabs(id));
+}
+
+// ============================================================
 // UI UTILS
 // ============================================================
 function toast(msg) {
