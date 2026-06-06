@@ -336,51 +336,65 @@ const EMBEDDED_WORDS = [
 //       localStorage   = 브라우저에서 사용자가 추가/수정한 데이터
 //       로드 시 두 데이터를 병합 (localStorage 우선)
 // ============================================================
-const LS_KEY = 'alice_vocab_user_v2';
-const LS_NEW_KEY = 'alice_vocab_new_keys';  // 새로 추가된 단어 키 목록
+const LS_KEY         = 'alice_vocab_user_v2';
+const LS_NEW_KEY     = 'alice_vocab_new_keys';
+const LS_DELETED_KEY = 'alice_vocab_deleted';   // 사용자가 삭제한 단어 키 목록
+const LS_ADDED_KEY   = 'alice_vocab_added';     // 사용자가 앱에서 직접 추가한 단어
+
 let words = [];
-let newWordKeys = new Set(); // 최근 추가된 단어 표시용
+let newWordKeys = new Set();
+let deletedKeys = new Set();  // 삭제된 단어는 EMBEDDED에 있어도 복구 안 함
 
 function loadWords() {
-  // localStorage에 사용자 데이터가 있으면 로드
   let userWords = [];
-  try { userWords = JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch { userWords = []; }
-  try { newWordKeys = new Set(JSON.parse(localStorage.getItem(LS_NEW_KEY)) || []); } catch { newWordKeys = new Set(); }
+  let userAdded = [];
+  try { userWords = JSON.parse(localStorage.getItem(LS_KEY)) || []; }    catch { userWords = []; }
+  try { newWordKeys  = new Set(JSON.parse(localStorage.getItem(LS_NEW_KEY))     || []); } catch { newWordKeys = new Set(); }
+  try { deletedKeys  = new Set(JSON.parse(localStorage.getItem(LS_DELETED_KEY)) || []); } catch { deletedKeys = new Set(); }
+  try { userAdded    = JSON.parse(localStorage.getItem(LS_ADDED_KEY)) || []; }  catch { userAdded = []; }
 
-  // 병합: embedded 기준으로 시작, localStorage로 업데이트
-  const userMap = new Map(userWords.map(w => [w.word.toLowerCase(), w]));
+  const userMap    = new Map(userWords.map(w => [w.word.toLowerCase(), w]));
   const embeddedMap = new Map(EMBEDDED_WORDS.map(w => [w.word.toLowerCase(), w]));
+  const userAddedMap = new Map(userAdded.map(w => [w.word.toLowerCase(), w]));
 
-  // embedded에 있는데 user에 없는 것 = 새로 추가된 단어
   const merged = [];
+
+  // 1. EMBEDDED 단어 처리 (사용자가 삭제한 것은 건너뜀)
   EMBEDDED_WORDS.forEach(ew => {
     const key = ew.word.toLowerCase();
+    if (deletedKeys.has(key)) return;           // 삭제된 단어 → 복구 안 함
     if (userMap.has(key)) {
-      merged.push(userMap.get(key)); // 사용자 버전 우선 (mastered 상태 등)
+      merged.push(userMap.get(key));             // 사용자 버전 우선 (mastered 등)
     } else {
       merged.push({...ew});
-      // embedded에만 있고 user에 없으면 새 단어
-      if (userWords.length > 0) newWordKeys.add(key); // 처음 로드 시엔 표시 안 함
+      if (userWords.length > 0) newWordKeys.add(key);
     }
   });
 
-  // user에만 있는 단어 (브라우저에서 직접 추가한 것)
-  userWords.forEach(uw => {
-    if (!embeddedMap.has(uw.word.toLowerCase())) merged.push(uw);
+  // 2. 사용자가 앱에서 직접 추가한 단어 (삭제되지 않은 것만)
+  userAdded.forEach(uw => {
+    const key = uw.word.toLowerCase();
+    if (!deletedKeys.has(key) && !embeddedMap.has(key)) merged.push(uw);
   });
 
   words = merged;
-  saveWords();
+  _saveAll();
 }
 
-function saveWords() {
-  localStorage.setItem(LS_KEY, JSON.stringify(words));
-  localStorage.setItem(LS_NEW_KEY, JSON.stringify([...newWordKeys]));
+function _saveAll() {
+  localStorage.setItem(LS_KEY,         JSON.stringify(words));
+  localStorage.setItem(LS_NEW_KEY,     JSON.stringify([...newWordKeys]));
+  localStorage.setItem(LS_DELETED_KEY, JSON.stringify([...deletedKeys]));
 }
+
+function saveWords() { _saveAll(); }
 
 function clearAllWords() {
   localStorage.removeItem(LS_KEY);
   localStorage.removeItem(LS_NEW_KEY);
+  localStorage.removeItem(LS_DELETED_KEY);
+  localStorage.removeItem(LS_ADDED_KEY);
+  deletedKeys = new Set();
   newWordKeys = new Set();
   words = EMBEDDED_WORDS.map(w => ({...w}));
   saveWords(); renderAll(); toast('초기화 완료');
