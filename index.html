@@ -570,7 +570,7 @@ function renderList() {
   const status = document.getElementById('filterStatus').value;
   const sortBy = document.getElementById('sortBy').value;
 
-  let list = words.map((w,i) => ({...w, _i:i})).filter(w => {
+  let list = filterByWeek(words.map((w,i) => ({...w, _i:i}))).filter(w => {
     const matchQ = !q || w.word.toLowerCase().includes(q) || w.meaning.toLowerCase().includes(q);
     const matchS = status==='all'
       || (status==='mastered' && w.mastered)
@@ -703,7 +703,8 @@ function cancelEdit() { document.getElementById('editCard').style.display='none'
 let fcWords=[], fcIdx=0;
 function startFlash() {
   const filter = document.getElementById('fcFilter').value;
-  fcWords = shuffle(filter==='learning' ? words.filter(w=>!w.mastered) : [...words]);
+  const pool = filterByWeek([...words]);
+  fcWords = shuffle(filter==='learning' ? pool.filter(w=>!w.mastered) : pool);
   if(!fcWords.length) { document.getElementById('fcArea').innerHTML='<div class="empty-msg">해당하는 단어가 없습니다</div>'; return; }
   fcIdx=0; renderFlash();
 }
