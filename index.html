@@ -733,8 +733,17 @@ function checkAnswer(btn, chosen, correct) {
     b.disabled = true;
     if(b.textContent === (type==='w2m'?w.meaning:w.word)) b.classList.add('correct');
   });
-  if(isCorrect) { qScore++; btn.classList.add('correct'); }
-  else { btn.classList.add('wrong'); qWrong.push(w); w.wrong = (w.wrong||0)+1; saveWords(); }
+  if(isCorrect) {
+    qScore++; btn.classList.add('correct');
+    w.mastered = true;                          // 맞으면 습득완료
+    saveWords();
+  } else {
+    btn.classList.add('wrong');
+    qWrong.push(w);
+    w.wrong = (w.wrong||0)+1;
+    w.mastered = false;                         // 틀리면 학습중
+    saveWords();
+  }
   const fb = document.getElementById('qFeedback');
   fb.className = 'quiz-feedback show ' + (isCorrect?'correct':'wrong');
   fb.textContent = isCorrect ? '✅ 정답!' : `❌ 오답! 정답: "${type==='w2m'?w.meaning:w.word}"`;
