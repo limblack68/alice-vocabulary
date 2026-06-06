@@ -657,14 +657,15 @@ function addWord() {
   if(!word || !meaning) { toast('단어와 뜻을 입력해주세요'); return; }
   words.push({ word, meaning,
     pos: document.getElementById('aPos').value,
+    week: document.getElementById('aWeek').value.trim() || '기타',
     example: document.getElementById('aExample').value.trim(),
     date: document.getElementById('aDate').value || today(),
     wrong: parseInt(document.getElementById('aWrong').value)||0,
     mastered: false
   });
-  saveWords(); updateStats(); toast('✅ 단어 추가 완료!');
-  ['aWord','aMeaning','aExample','aDate'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('aPos').value=''; document.getElementById('aWrong').value=1;
+  saveWords(); updateStats(); refreshWeekTabs(); toast('✅ 단어 추가 완료!');
+  ['aWord','aMeaning','aExample','aDate','aWeek'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('aPos').value=''; document.getElementById('aWrong').value=0;
 }
 
 function openEdit(i) {
