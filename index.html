@@ -659,6 +659,11 @@ function renderAll() { updateStats(); renderList(); }
 loadWords();
 renderAll();
 document.getElementById('aDate').value = today();
+
+// 서비스 워커 등록 (PWA 설치 지원)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
