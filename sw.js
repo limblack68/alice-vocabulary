@@ -1,5 +1,5 @@
 // Alice's Vocabulary Bank — Service Worker
-const CACHE = 'alice-vocab-v1';
+const CACHE = 'alice-vocab-v4';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
