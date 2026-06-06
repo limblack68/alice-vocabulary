@@ -528,13 +528,20 @@ function addWord() {
   const word = document.getElementById('aWord').value.trim();
   const meaning = document.getElementById('aMeaning').value.trim();
   if(!word || !meaning) { toast('단어와 뜻을 입력해주세요'); return; }
-  words.push({ word, meaning,
+  const newWord = { word, meaning,
     pos: document.getElementById('aPos').value,
     example: document.getElementById('aExample').value.trim(),
     date: document.getElementById('aDate').value || today(),
     wrong: parseInt(document.getElementById('aWrong').value)||0,
     mastered: false
-  });
+  };
+  words.push(newWord);
+  // 사용자 추가 단어를 별도 저장 → 새로고침해도 유지됨
+  const userAdded = JSON.parse(localStorage.getItem(LS_ADDED_KEY) || '[]');
+  userAdded.push(newWord);
+  localStorage.setItem(LS_ADDED_KEY, JSON.stringify(userAdded));
+  // 혹시 삭제 목록에 있으면 제거
+  deletedKeys.delete(word.toLowerCase());
   saveWords(); updateStats(); toast('✅ 단어 추가 완료!');
   ['aWord','aMeaning','aExample','aDate'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('aPos').value=''; document.getElementById('aWrong').value=1;
