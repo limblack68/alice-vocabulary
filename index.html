@@ -42,10 +42,38 @@
   .stat-box.green .val { color: var(--success); }
   .stat-box.red   .val { color: var(--danger); }
   .stat-box.gold  .val { color: var(--warn); }
+  /* ── 데스크탑 테이블 ── */
   .word-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
   .word-table th { background: var(--primary); color: #fff; padding: 10px 12px; text-align: left; }
   .word-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .word-table tr:hover td { background: #f7f9fc; }
+
+  /* ── 모바일 카드 ── */
+  .word-cards { display: none; }
+  .word-card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.07); border-left: 4px solid var(--accent); }
+  .word-card.is-mastered { border-left-color: var(--success); }
+  .word-card.is-new { border-left-color: var(--warn); }
+  .wc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .wc-word { font-size: 1.15rem; font-weight: 700; color: var(--primary); }
+  .wc-badges { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+  .wc-meaning { font-size: .92rem; color: var(--text); margin-bottom: 6px; }
+  .wc-example { font-size: .82rem; color: var(--muted); font-style: italic; margin-bottom: 10px; line-height: 1.5; display: none; }
+  .wc-example.open { display: block; }
+  .wc-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .wc-meta { font-size: .78rem; color: var(--muted); }
+  .wc-actions { display: flex; gap: 6px; }
+  .wc-toggle-ex { font-size: .75rem; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0; text-decoration: underline; margin-bottom: 6px; }
+
+  /* ── 반응형 전환 ── */
+  @media (max-width: 600px) {
+    .word-table { display: none; }
+    .word-cards { display: block; }
+    .tabs { gap: 4px; }
+    .tab { padding: 8px 6px; font-size: .78rem; }
+    header h1 { font-size: 1.4rem; }
+    .stat-box .val { font-size: 1.3rem; }
+  }
+
   .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: .75rem; font-weight: 600; }
   .badge.mastered  { background: #d4efdf; color: var(--success); }
   .badge.learning  { background: #fde8e8; color: var(--danger); }
