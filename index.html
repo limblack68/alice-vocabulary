@@ -313,7 +313,7 @@
       <textarea class="import-area" id="importText" placeholder="여기에 단어 데이터를 붙여넣으세요..."></textarea>
       <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="importWords()">가져오기</button>
-        <button class="btn btn-danger" onclick="if(confirm('모든 단어를 삭제할까요?')){clearAllWords();}">전체 초기화</button>
+        <button class="btn btn-danger" onclick="clearAllWords()">전체 초기화</button>
         <button class="btn" style="background:var(--border)" onclick="exportCSV()">📤 CSV 내보내기</button>
       </div>
     </div>
@@ -754,9 +754,8 @@ function renderAll() { updateStats(); renderList(); }
 // ============================================================
 // INIT
 // ============================================================
-loadWords();
-renderAll();
 document.getElementById('aDate').value = today();
+loadWords(); // async — 완료 후 내부에서 renderAll() 호출
 
 // 서비스 워커 등록 (PWA 설치 지원)
 if ('serviceWorker' in navigator) {
