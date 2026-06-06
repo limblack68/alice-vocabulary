@@ -448,12 +448,14 @@ function renderList() {
     document.getElementById('wordList').innerHTML = '<div class="empty-msg">단어가 없습니다.</div>';
     return;
   }
-  let html = `<table class="word-table"><thead><tr>
+
+  // ── 데스크탑: 테이블 ──
+  let tableHtml = `<table class="word-table"><thead><tr>
     <th>단어</th><th>영어 뜻</th><th>품사</th><th>예문</th><th>틀린 횟수</th><th>상태</th><th>관리</th>
   </tr></thead><tbody>`;
   list.forEach(w => {
     const isNew = newWordKeys.has(w.word.toLowerCase());
-    html += `<tr>
+    tableHtml += `<tr>
       <td><b>${esc(w.word)}</b>${isNew ? ' <span class="badge new-word">NEW</span>' : ''}</td>
       <td>${esc(w.meaning)}</td>
       <td><span class="tag">${esc(w.pos||'')}</span></td>
@@ -467,8 +469,38 @@ function renderList() {
       </td>
     </tr>`;
   });
-  html += '</tbody></table>';
-  document.getElementById('wordList').innerHTML = html;
+  tableHtml += '</tbody></table>';
+
+  // ── 모바일: 카드 ──
+  let cardsHtml = '<div class="word-cards">';
+  list.forEach((w, ci) => {
+    const isNew = newWordKeys.has(w.word.toLowerCase());
+    const cls = [isNew?'is-new':'', w.mastered?'is-mastered':''].filter(Boolean).join(' ');
+    cardsHtml += `
+    <div class="word-card ${cls}">
+      <div class="wc-top">
+        <div class="wc-word">${esc(w.word)}${isNew?' <span class="badge new-word">NEW</span>':''}</div>
+        <div class="wc-badges">
+          <span class="tag">${esc(w.pos||'')}</span>
+          <span class="badge ${w.mastered?'mastered':'learning'}">${w.mastered?'✅':'❌'}</span>
+        </div>
+      </div>
+      <div class="wc-meaning">${esc(w.meaning)}</div>
+      ${w.example ? `<button class="wc-toggle-ex" onclick="this.nextElementSibling.classList.toggle('open');this.textContent=this.nextElementSibling.classList.contains('open')?'▲ 예문 숨기기':'▼ 예문 보기'">▼ 예문 보기</button>
+      <div class="wc-example">${esc(w.example)}</div>` : ''}
+      <div class="wc-bottom">
+        <div class="wc-meta">틀린 횟수: <b style="color:var(--danger)">${w.wrong}회</b></div>
+        <div class="wc-actions">
+          <button class="btn-icon" onclick="openEdit(${w._i})">✏️</button>
+          <button class="btn-icon" onclick="toggleMastered(${w._i})">${w.mastered?'↩️':'✅'}</button>
+          <button class="btn-icon" onclick="deleteWord(${w._i})">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  cardsHtml += '</div>';
+
+  document.getElementById('wordList').innerHTML = tableHtml + cardsHtml;
 }
 
 function clearNewBadge() { newWordKeys.clear(); saveWords(); renderList(); }
