@@ -744,8 +744,9 @@ function fcNav(d) { fcIdx = Math.max(0, Math.min(fcWords.length-1, fcIdx+d)); re
 let qWords=[], qIdx=0, qScore=0, qWrong=[], qAnswered=false;
 function startQuiz() {
   const filter = document.getElementById('qFilter').value;
-  const count  = Math.min(parseInt(document.getElementById('qCount').value)||10, words.length);
-  const pool   = filter==='learning' ? words.filter(w=>!w.mastered) : [...words];
+  const weekPool = filterByWeek([...words]);
+  const count  = Math.min(parseInt(document.getElementById('qCount').value)||10, weekPool.length);
+  const pool   = filter==='learning' ? weekPool.filter(w=>!w.mastered) : weekPool;
   if(pool.length < 4) { toast('단어가 최소 4개 필요합니다'); return; }
   qWords = shuffle(pool).slice(0, count);
   qIdx=0; qScore=0; qWrong=[];
