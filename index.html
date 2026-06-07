@@ -504,8 +504,14 @@ let currentWeek = 'all'; // 전체 선택 기본값
 
 function getWeeks() {
   const set = new Set();
-  words.forEach(w => { if(w.week) set.add(String(w.week)); });
-  return ['all', ...Array.from(set).sort((a,b) => Number(a)-Number(b)), '기타'];
+  let hasOther = false;
+  words.forEach(w => {
+    if (!w.week || w.week === '기타') { hasOther = true; }
+    else { set.add(String(w.week)); }
+  });
+  const weeks = ['all', ...Array.from(set).sort((a,b) => Number(a)-Number(b))];
+  if (hasOther) weeks.push('기타');
+  return weeks;
 }
 
 function renderWeekTabs(containerId, onSelect) {
