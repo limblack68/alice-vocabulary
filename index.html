@@ -461,6 +461,17 @@ async function loadWords() {
           }
         }
       });
+
+      // week 필드가 없는 기존 단어에 EMBEDDED_WORDS의 week 정보 반영
+      const embeddedMap = {};
+      EMBEDDED_WORDS.forEach(ew => { embeddedMap[ew.word.toLowerCase()] = ew; });
+      words.forEach(w => {
+        if (!w.week) {
+          const ew = embeddedMap[w.word.toLowerCase()];
+          if (ew && ew.week) { w.week = ew.week; changed = true; }
+        }
+      });
+
       if (changed) {
         await DOC.update({ words, seenEmbedded: [...seenEmbedded], newWordKeys: [...newWordKeys] });
       }
