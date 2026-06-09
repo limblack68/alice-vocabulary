@@ -780,25 +780,38 @@ function renderQuestion() {
   const w = qWords[qIdx];
   document.getElementById('qProgress').style.width = (qIdx/qWords.length*100)+'%';
   document.getElementById('qStatus').textContent = `${qIdx+1} / ${qWords.length} 문제  |  맞음: ${qScore}`;
-  document.getElementById('qQuestion').textContent = type==='w2m' ? w.word : w.meaning;
   document.getElementById('qFeedback').className='quiz-feedback';
   document.getElementById('qNext').style.display='none';
   qAnswered = false;
-  const others = shuffle(words.filter(x=>x.word!==w.word)).slice(0,3);
-  const opts = shuffle([w, ...others]);
-  document.getElementById('qOptions').innerHTML = opts.map(o => {
-    const label = type==='w2m' ? o.meaning : o.word;
-    return `<button class="quiz-opt" onclick="checkAnswer(this,'${o.word.replace(/'/g,"\\'")}','${w.word.replace(/'/g,"\\'")}')">${esc(label)}</button>`;
-  }).join('');
+
+  if(type === 'w2p') {
+    document.getElementById('qQuestion').textContent = w.word;
+    const POS_LIST = ['noun','verb','adj','adv','prep','conj','phrase'];
+    const correctPos = w.pos || '';
+    const distractors = shuffle(POS_LIST.filter(p => p !== correctPos)).slice(0, 3);
+    const opts = shuffle([correctPos, ...distractors]);
+    document.getElementById('qOptions').innerHTML = opts.map(p =>
+      `<button class="quiz-opt" onclick="checkAnswer(this,'${p}','${correctPos}')">${esc(p)}</button>`
+    ).join('');
+  } else {
+    document.getElementById('qQuestion').textContent = type==='w2m' ? w.word : w.meaning;
+    const others = shuffle(words.filter(x=>x.word!==w.word)).slice(0,3);
+    const opts = shuffle([w, ...others]);
+    document.getElementById('qOptions').innerHTML = opts.map(o => {
+      const label = type==='w2m' ? o.meaning : o.word;
+      return `<button class="quiz-opt" onclick="checkAnswer(this,'${o.word.replace(/'/g,"\\'")}','${w.word.replace(/'/g,"\\'")}')">${esc(label)}</button>`;
+    }).join('');
+  }
 }
 function checkAnswer(btn, chosen, correct) {
   if(qAnswered) return; qAnswered=true;
   const type = document.getElementById('qType').value;
   const w = qWords[qIdx];
   const isCorrect = chosen===correct;
+  const correctLabel = type==='w2p' ? w.pos : type==='w2m' ? w.meaning : w.word;
   document.querySelectorAll('.quiz-opt').forEach(b => {
     b.disabled = true;
-    if(b.textContent === (type==='w2m'?w.meaning:w.word)) b.classList.add('correct');
+    if(b.textContent === correctLabel) b.classList.add('correct');
   });
   if(isCorrect) {
     qScore++; btn.classList.add('correct');
