@@ -826,7 +826,7 @@ function checkAnswer(btn, chosen, correct) {
   }
   const fb = document.getElementById('qFeedback');
   fb.className = 'quiz-feedback show ' + (isCorrect?'correct':'wrong');
-  fb.textContent = isCorrect ? '✅ 정답!' : `❌ 오답! 정답: "${type==='w2m'?w.meaning:w.word}"`;
+  fb.textContent = isCorrect ? '✅ 정답!' : `❌ 오답! 정답: "${type==='w2p'?w.pos:type==='w2m'?w.meaning:w.word}"`;
   document.getElementById('qNext').style.display='block';
 }
 function nextQuestion() { qIdx++; if(qIdx>=qWords.length) showResult(); else renderQuestion(); }
