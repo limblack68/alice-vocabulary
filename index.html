@@ -767,8 +767,10 @@ function startQuiz() {
   const count  = Math.min(parseInt(document.getElementById('qCount').value)||10, weekPool.length);
   const pool   = filter==='learning' ? weekPool.filter(w=>!w.mastered) : weekPool;
   const type = document.getElementById('qType').value;
-  const finalPool = type==='w2p' ? pool.filter(w=>w.pos) : pool;
-  if(finalPool.length < 4) { toast(type==='w2p' ? '품사 정보가 있는 단어가 최소 4개 필요합니다' : '단어가 최소 4개 필요합니다'); return; }
+  const finalPool = type==='w2p' ? pool.filter(w=>w.pos)
+    : type==='synant' ? pool.filter(w=>(w.synonyms&&w.synonyms.length)||(w.antonyms&&w.antonyms.length))
+    : pool;
+  if(finalPool.length < 4) { toast(type==='w2p' ? '품사 정보가 있는 단어가 최소 4개 필요합니다' : type==='synant' ? '동의어/반의어 정보가 있는 단어가 최소 4개 필요합니다' : '단어가 최소 4개 필요합니다'); return; }
   qWords = shuffle(finalPool).slice(0, count);
   qIdx=0; qScore=0; qWrong=[];
   document.getElementById('quizSetup').style.display='none';
