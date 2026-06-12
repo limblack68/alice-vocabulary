@@ -796,6 +796,26 @@ function renderQuestion() {
     document.getElementById('qOptions').innerHTML = opts.map(p =>
       `<button class="quiz-opt" onclick="checkAnswer(this,'${p}','${correctPos}')">${esc(p)}</button>`
     ).join('');
+  } else if(type === 'synant') {
+    const hasSyn = w.synonyms && w.synonyms.length > 0;
+    const hasAnt = w.antonyms && w.antonyms.length > 0;
+    const askSyn = hasSyn && (!hasAnt || Math.random() > 0.5);
+    const pool2 = askSyn ? w.synonyms : w.antonyms;
+    const correct = pool2[Math.floor(Math.random() * pool2.length)];
+    const label = askSyn ? '🟥 동의어 (Synonym)' : '🟪 반의어 (Antonym)';
+    document.getElementById('qQuestion').innerHTML = `<div style="font-size:.82em;color:var(--muted);margin-bottom:6px">${label}</div>${esc(w.word)}`;
+    const allOthers = [];
+    words.forEach(x => {
+      if(x.word !== w.word) {
+        (x.synonyms||[]).forEach(s => allOthers.push(s));
+        (x.antonyms||[]).forEach(a => allOthers.push(a));
+      }
+    });
+    const distractors = shuffle([...new Set(allOthers)].filter(s => s !== correct)).slice(0, 3);
+    const opts = shuffle([correct, ...distractors]);
+    document.getElementById('qOptions').innerHTML = opts.map(p =>
+      `<button class="quiz-opt" onclick="checkAnswer(this,'${p.replace(/'/g,"\\'")}','${correct.replace(/'/g,"\\'")}')">${esc(p)}</button>`
+    ).join('');
   } else {
     document.getElementById('qQuestion').textContent = type==='w2m' ? w.word : w.meaning;
     const others = shuffle(words.filter(x=>x.word!==w.word)).slice(0,3);
