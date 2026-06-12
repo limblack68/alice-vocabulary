@@ -269,7 +269,7 @@
       <div class="section-title">🎯 퀴즈 설정</div>
       <div class="week-tabs" id="quizWeekTabs" style="margin-bottom:12px"></div>
       <div class="form-row">
-        <select id="qType"><option value="m2w">뜻 → 단어 맞추기</option><option value="w2m">단어 → 뜻 맞추기</option><option value="w2p">단어 → 품사 맞추기</option></select>
+        <select id="qType"><option value="m2w">뜻 → 단어 맞추기</option><option value="w2m">단어 → 뜻 맞추기</option><option value="w2p">단어 → 품사 맞추기</option><option value="synant">동의어 / 반의어 맞추기</option></select>
         <select id="qFilter"><option value="all">전체 단어</option><option value="learning">학습 중만</option></select>
         <input id="qCount" type="number" value="10" min="4" max="50" placeholder="문제 수" style="flex:0.5" />
       </div>
@@ -462,14 +462,15 @@ async function loadWords() {
         }
       });
 
-      // week 필드가 없는 기존 단어에 EMBEDDED_WORDS의 week 정보 반영
+      // week / synonyms / antonyms 필드가 없는 기존 단어에 EMBEDDED_WORDS 정보 반영
       const embeddedMap = {};
       EMBEDDED_WORDS.forEach(ew => { embeddedMap[ew.word.toLowerCase()] = ew; });
       words.forEach(w => {
-        if (!w.week) {
-          const ew = embeddedMap[w.word.toLowerCase()];
-          if (ew && ew.week) { w.week = ew.week; changed = true; }
-        }
+        const ew = embeddedMap[w.word.toLowerCase()];
+        if (!ew) return;
+        if (!w.week && ew.week) { w.week = ew.week; changed = true; }
+        if (!w.synonyms && ew.synonyms) { w.synonyms = ew.synonyms; changed = true; }
+        if (!w.antonyms && ew.antonyms) { w.antonyms = ew.antonyms; changed = true; }
       });
 
       if (changed) {
