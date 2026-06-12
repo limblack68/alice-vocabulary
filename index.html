@@ -831,7 +831,7 @@ function checkAnswer(btn, chosen, correct) {
   const type = document.getElementById('qType').value;
   const w = qWords[qIdx];
   const isCorrect = chosen===correct;
-  const correctLabel = type==='w2p' ? w.pos : type==='w2m' ? w.meaning : w.word;
+  const correctLabel = type==='w2p' ? w.pos : (type==='synant'||type==='w2m') ? (type==='w2m'?w.meaning:correct) : w.word;
   document.querySelectorAll('.quiz-opt').forEach(b => {
     b.disabled = true;
     if(b.textContent === correctLabel) b.classList.add('correct');
