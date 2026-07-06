@@ -538,6 +538,11 @@ async function loadWords() {
             newWordKeys.add(key);
             changed = true;
           }
+        } else if (!existingKeys.has(key)) {
+          // seenEmbedded엔 있지만 words에 없는 경우 (Firebase 쓰기 오류로 누락된 단어 복구)
+          words.push({...ew});
+          newWordKeys.add(key);
+          changed = true;
         }
       });
 
