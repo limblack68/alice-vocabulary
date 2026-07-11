@@ -149,6 +149,103 @@
   #loading .spinner { width: 44px; height: 44px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 16px; }
   #loading p { color: var(--muted); font-size: .95rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  /* 포인트 획득 플로팅 텍스트 */
+  .float-point {
+    position: fixed; z-index: 1000; font-weight: 800; font-size: 1.3rem; color: var(--success);
+    pointer-events: none; animation: floatUp 1s ease-out forwards; text-shadow: 0 1px 3px rgba(0,0,0,.15);
+  }
+  @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-60px); } }
+  /* 레벨업/졸업/출석 스트릭 컨페티 */
+  .confetti-piece {
+    position: fixed; width: 8px; height: 8px; top: -10px; z-index: 1001; pointer-events: none;
+    animation: confettiFall 1.6s ease-in forwards;
+  }
+  @keyframes confettiFall { to { transform: translateY(100vh) rotate(540deg); opacity: 0; } }
+  /* 펫 탭 — 강아지가 돌아다니는 마당 */
+  .pet-yard {
+    position: relative; height: 110px; margin: 4px 0 8px; overflow: hidden;
+    background: linear-gradient(to bottom, transparent 72%, #eaf6ec 72%); border-radius: 12px;
+  }
+  .pet-walker { position: absolute; top: 15px; left: 10px; cursor: pointer; transition: left 3.2s ease-in-out; }
+  .pet-walker.facing-left #petSvg { transform: scaleX(-1); }
+  /* 강아지 몸통 전체 리그: 대기 시 살짝 위아래로 숨쉬듯, 걸을 때 통통 튀듯 */
+  #dogRig { transform-origin: 118px 140px; animation: dogIdleBob 1.6s ease-in-out infinite; }
+  @keyframes dogIdleBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  .walking #dogRig { animation: dogWalkBob .5s ease-in-out infinite; }
+  @keyframes dogWalkBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  .playing #dogRig { animation: dogHop .7s ease; }
+  @keyframes dogHop { 0% { transform: translateY(0) rotate(0deg) scale(1); } 30% { transform: translateY(-20px) rotate(-8deg) scale(1.06); } 60% { transform: translateY(-20px) rotate(8deg) scale(1.06); } 100% { transform: translateY(0) rotate(0deg) scale(1); } }
+  /* 꼬리 흔들기 */
+  #dogTail { transform-origin: 66px 80px; animation: tailWagIdle 1.3s ease-in-out infinite; }
+  @keyframes tailWagIdle { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+  .walking #dogTail { animation: tailWagFast .5s ease-in-out infinite; }
+  .playing #dogTail { animation: tailWagFast .22s ease-in-out infinite; }
+  @keyframes tailWagFast { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+  /* 걸을 때 앞/뒷다리 교차 스윙 */
+  #legFront, #legBack { transform-origin: 158.5px 108px; }
+  #legBack { transform-origin: 93.5px 108px; }
+  .walking #legFront { animation: legSwingA .5s ease-in-out infinite; }
+  .walking #legBack { animation: legSwingB .5s ease-in-out infinite; }
+  @keyframes legSwingA { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-20deg); } }
+  @keyframes legSwingB { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+  /* 귀: 평소엔 살짝, 놀 때는 쫑긋 */
+  #dogEar { transform-origin: 156px 36px; animation: earIdle 2.4s ease-in-out infinite; }
+  @keyframes earIdle { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(4deg); } }
+  .playing #dogEar { animation: earPerk .35s ease-in-out 2; }
+  @keyframes earPerk { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-24deg); } }
+  /* 눈 깜빡임 */
+  #dogEye { transform-origin: 182px 52px; animation: dogBlink 4.2s ease-in-out infinite; }
+  @keyframes dogBlink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+  /* 개껌 씹기 */
+  #dogMouth { transform-origin: 203px 80px; }
+  .chewing #dogMouth { animation: chewMouth .25s ease-in-out 4; }
+  @keyframes chewMouth { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
+  .chewing #dogRig { animation: chewBob .25s ease-in-out 4; }
+  @keyframes chewBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  /* 간식 먹고 신남 */
+  .sparkling #dogTail { animation: tailWagFast .3s ease-in-out 3; }
+  /* 산책 — 평소보다 빠르고 신나게 */
+  .pet-walker.excited { transition: left .85s ease-in-out; }
+  .excited #dogTail { animation: tailWagFast .3s ease-in-out infinite; }
+  .excited #legFront { animation: legSwingA .3s ease-in-out infinite; }
+  .excited #legBack { animation: legSwingB .3s ease-in-out infinite; }
+  /* 응가 방치 — 시무룩 */
+  .dirty #dogEar { animation: none; transform: rotate(16deg); }
+  .dirty #dogRig { animation: dogSadBob 2.4s ease-in-out infinite; }
+  @keyframes dogSadBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(1px); } }
+  /* 낮잠 Zzz */
+  #dogZzz { font-size: 20px; font-weight: 700; fill: #93a3ad; font-family: Arial, sans-serif; animation: zzzFloat 1.8s ease-in-out infinite; }
+  @keyframes zzzFloat { 0% { opacity: 0; transform: translateY(4px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
+  /* 응가 */
+  .poop { position: absolute; bottom: 4px; font-size: 1.5rem; cursor: pointer; z-index: 2; }
+  /* 먹이가 하늘에서 떨어지는 연출 */
+  .falling-food { position: absolute; top: -40px; font-size: 1.8rem; z-index: 3; animation: foodFall .65s cubic-bezier(.5,0,1,1) forwards; }
+  @keyframes foodFall { 0% { top: -40px; transform: scale(.8) rotate(0deg); } 80% { top: 76px; transform: scale(1.05) rotate(20deg); } 100% { top: 80px; transform: scale(1) rotate(0deg); } }
+  /* 목걸이 방울 살랑거림 */
+  #accBell { transform-origin: 157px 96px; animation: bellSway 2s ease-in-out infinite; }
+  @keyframes bellSway { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+  /* 레벨업 순간: 반짝 빛나며 통통 튀어오르는 연출 (다른 리액션보다 우선 적용) */
+  .leveling-up #dogRig { animation: levelPop .9s ease; }
+  @keyframes levelPop {
+    0%   { transform: scale(1) translateY(0); filter: brightness(1) drop-shadow(0 0 0 rgba(245,197,24,0)); }
+    30%  { transform: scale(1.35) translateY(-14px); filter: brightness(1.7) drop-shadow(0 0 14px rgba(245,197,24,.9)); }
+    60%  { transform: scale(1.12) translateY(-4px); filter: brightness(1.25) drop-shadow(0 0 6px rgba(245,197,24,.5)); }
+    100% { transform: scale(1) translateY(0); filter: brightness(1) drop-shadow(0 0 0 rgba(245,197,24,0)); }
+  }
+  /* 레벨업 배너 */
+  .levelup-banner {
+    position: absolute; left: 50%; top: 38%; z-index: 10; text-align: center; pointer-events: none;
+    font-size: 1.3rem; font-weight: 800; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35);
+    background: linear-gradient(135deg, #f5c518, #f39c12); padding: 10px 22px; border-radius: 14px;
+    animation: levelBanner 1.6s ease forwards;
+  }
+  @keyframes levelBanner {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(.3) rotate(-8deg); }
+    15%  { opacity: 1; transform: translate(-50%,-50%) scale(1.15) rotate(3deg); }
+    25%  { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    80%  { opacity: 1; transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(1.1) rotate(0deg) translateY(-20px); }
+  }
 </style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -163,6 +260,10 @@
     <h1>📚 Alice's Vocabulary Bank</h1>
     <p>MI 어학원 단어 시험 오답 관리 &amp; 학습 앱</p>
   </header>
+  <div id="miniWidget" style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;font-size:.92rem;color:var(--muted);">
+    <span><span id="miniDogEmoji">🐣</span> <span id="miniDogStage">아기 강아지</span></span>
+    <span>🪙 <b id="miniCoins" style="color:var(--warn)">0</b></span>
+  </div>
   <div class="stats-bar">
     <div class="stat-box"><div class="val" id="sTotal">0</div><div class="lbl">전체 단어</div></div>
     <div class="stat-box green"><div class="val" id="sMastered">0</div><div class="lbl">습득 완료 ✅</div></div>
@@ -174,6 +275,8 @@
     <button class="tab" onclick="switchTab('add',this)">➕ 단어 추가</button>
     <button class="tab" onclick="switchTab('flash',this)">🃏 플래시카드</button>
     <button class="tab" onclick="switchTab('quiz',this)">🎯 퀴즈</button>
+    <button class="tab" onclick="switchTab('review',this)">📅 복습</button>
+    <button class="tab" onclick="switchTab('pet',this)">🐶 펫</button>
     <button class="tab" onclick="switchTab('wrong',this)">🔁 오답 반복</button>
     <button class="tab" onclick="switchTab('import',this)">📥 가져오기</button>
   </div>
@@ -291,6 +394,95 @@
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="startQuiz()">다시 풀기</button>
         <button class="btn btn-warn" onclick="document.getElementById('quizResult').style.display='none';document.getElementById('quizSetup').style.display='block'">설정으로</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 복습 (에빙하우스 SRS) -->
+  <div class="panel" id="panel-review">
+    <div class="card">
+      <div class="section-title">📅 오늘의 복습</div>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px;">망각곡선에 따라 오늘 복습할 때가 된 단어를 모아 테스트합니다. 맞히면 다음 복습까지의 간격이 늘어나고, 틀리면 한 단계 되돌아갑니다.</p>
+      <p id="reviewSummary" style="font-weight:700;color:var(--primary);margin-bottom:16px;"></p>
+      <button class="btn btn-primary" id="startReviewBtn" onclick="startReview()">복습 시작</button>
+    </div>
+  </div>
+
+  <!-- 펫 (강아지 키우기) -->
+  <div class="panel" id="panel-pet">
+    <div class="card" style="text-align:center;">
+      <div class="section-title">🐶 나의 강아지</div>
+      <div class="pet-yard" id="petYard">
+        <div id="poopLayer"></div>
+        <div class="pet-walker" id="petWalker" onclick="petPlay()">
+          <svg id="petSvg" viewBox="0 0 220 150" width="110" height="75" style="overflow:visible">
+            <defs>
+              <radialGradient id="bodyGrad" cx="35%" cy="28%" r="75%">
+                <stop offset="0%" stop-color="#f6cd97"/>
+                <stop offset="100%" stop-color="#dda264"/>
+              </radialGradient>
+              <radialGradient id="headGrad" cx="35%" cy="28%" r="75%">
+                <stop offset="0%" stop-color="#f8d29f"/>
+                <stop offset="100%" stop-color="#e0a868"/>
+              </radialGradient>
+              <radialGradient id="shadowGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#000" stop-opacity=".18"/>
+                <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <g id="dogScale">
+              <ellipse id="dogShadow" cx="118" cy="137" rx="48" ry="9" fill="url(#shadowGrad)"/>
+              <g id="dogRig">
+                <g id="dogTail"><path d="M64,82 Q28,66 36,32 Q54,58 70,76 Z" fill="#c98f55"/></g>
+                <ellipse cx="118" cy="90" rx="58" ry="34" fill="url(#bodyGrad)"/>
+                <ellipse cx="108" cy="109" rx="32" ry="15" fill="#fbe8c6"/>
+                <g id="legBack"><rect x="86" y="108" width="15" height="32" rx="7.5" fill="#caa06a"/><ellipse cx="93.5" cy="140" rx="9" ry="5" fill="#e8c896"/></g>
+                <g id="legFront"><rect x="151" y="108" width="15" height="32" rx="7.5" fill="#caa06a"/><ellipse cx="158.5" cy="140" rx="9" ry="5" fill="#e8c896"/></g>
+                <g id="accBandana" style="display:none"><path d="M136,93 L180,93 L158,120 Z" fill="#e05656"/><path d="M136,93 L180,93 L158,101" stroke="#fff" stroke-width="1.5" fill="none" opacity=".5"/></g>
+                <circle cx="172" cy="60" r="34" fill="url(#headGrad)"/>
+                <g id="dogEar"><path d="M146,38 Q128,6 158,16 Q168,30 146,38 Z" fill="#c98f55"/></g>
+                <g id="accFlower" style="display:none" transform="translate(133,16)"><circle cx="0" cy="-6" r="4" fill="#f78fb3"/><circle cx="6" cy="-2" r="4" fill="#f78fb3"/><circle cx="4" cy="5" r="4" fill="#f78fb3"/><circle cx="-4" cy="5" r="4" fill="#f78fb3"/><circle cx="-6" cy="-2" r="4" fill="#f78fb3"/><circle cx="0" cy="0" r="3.2" fill="#f5c518"/></g>
+                <ellipse cx="158" cy="71" rx="7.5" ry="4.5" fill="#f7a6a6" opacity=".55"/>
+                <ellipse cx="197" cy="71" rx="16" ry="12" fill="#fff3de"/>
+                <circle cx="210" cy="69" r="5" fill="#3a2a1a"/>
+                <g id="dogMouth"><path d="M197,78 Q203,83 209,78" stroke="#3a2a1a" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>
+                <g id="dogEye"><circle cx="182" cy="52" r="4.6" fill="#2c2c2c"/><circle cx="184" cy="50" r="1.5" fill="#fff"/><circle cx="180.3" cy="53.5" r=".8" fill="#fff" opacity=".7"/></g>
+                <g id="accCollar" style="display:none"><path d="M139,85 Q157,99 175,83" stroke="#4a90d9" stroke-width="6" fill="none" stroke-linecap="round"/><circle id="accBell" cx="157" cy="99" r="5" fill="#f5c518" stroke="#c9960f" stroke-width="1"/></g>
+                <g id="dogCrown" style="display:none"><path d="M162,24 l4,-12 6,8 6,-10 6,10 6,-8 4,12 Z" fill="#f5c518" stroke="#c9960f" stroke-width="1.5"/></g>
+              </g>
+              <g id="dogRigSleep" style="display:none">
+                <ellipse cx="118" cy="112" rx="70" ry="26" fill="url(#bodyGrad)"/>
+                <ellipse cx="102" cy="124" rx="38" ry="12" fill="#fbe8c6"/>
+                <path d="M60,110 Q30,102 34,82" stroke="#c98f55" stroke-width="10" fill="none" stroke-linecap="round"/>
+                <circle cx="183" cy="102" r="26" fill="url(#headGrad)"/>
+                <path d="M163,88 Q150,68 173,74 Q180,84 163,88 Z" fill="#c98f55"/>
+                <ellipse cx="156" cy="112" rx="7" ry="4" fill="#f7a6a6" opacity=".55"/>
+                <ellipse cx="201" cy="108" rx="10" ry="7" fill="#fff3de"/>
+                <circle cx="209" cy="107" r="3.2" fill="#3a2a1a"/>
+                <path d="M174,100 Q181,96 188,100" stroke="#2c2c2c" stroke-width="2" fill="none" stroke-linecap="round"/>
+              </g>
+              <text id="dogZzz" x="205" y="66" style="display:none">Zzz</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div id="petNameForm" style="margin-bottom:10px;">
+        <input id="petNameInput" placeholder="이름 짓기" style="max-width:150px;display:inline-block;">
+        <button class="btn btn-sm btn-primary" onclick="setDogName()">저장</button>
+      </div>
+      <div id="petStageLabel" style="color:var(--muted);font-size:.9rem;margin-bottom:14px;"></div>
+      <div class="progress-bar"><div class="progress-fill" id="petExpBar"></div></div>
+      <div id="petExpLabel" style="font-size:.82rem;color:var(--muted);margin-bottom:18px;"></div>
+      <div style="font-size:1.15rem;font-weight:700;color:var(--warn);margin-bottom:14px;">🪙 <span id="petCoins">0</span> 코인</div>
+      <div class="section-title" style="font-size:.92rem;">🍽️ 먹이 주기</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="btn btn-success btn-sm" onclick="feedItem('gum')">🦴 개껌 (8코인)</button>
+        <button class="btn btn-success btn-sm" onclick="feedItem('sausage')">🌭 소시지 (20코인)</button>
+        <button class="btn btn-success btn-sm" onclick="feedItem('steak')">🥩 스테이크 (45코인)</button>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="walkDog()">🚶 산책하기 (30코인)</button>
+        <button class="btn btn-primary btn-sm" onclick="napDog()">😴 낮잠 재우기 (12코인)</button>
       </div>
     </div>
   </div>
@@ -512,12 +704,17 @@ const DOC = db.collection('alice').doc('vocabulary');
 let words = [];
 let newWordKeys = new Set();
 
+// SRS(에빙하우스 복습) 관련 필드 기본값
+function srsDefaults() {
+  return { srsStage: 0, nextReviewDate: today(), lastReviewDate: null, everMastered: false };
+}
+
 async function loadWords() {
   try {
     const snap = await DOC.get();
     if (!snap.exists) {
       // ── 첫 실행: EMBEDDED_WORDS로 Firestore 초기화 ──
-      words = EMBEDDED_WORDS.map(w => ({...w}));
+      words = EMBEDDED_WORDS.map(w => ({...srsDefaults(), ...w}));
       const seenArr = words.map(w => w.word.toLowerCase());
       await DOC.set({ words, seenEmbedded: seenArr, newWordKeys: [] });
     } else {
@@ -534,13 +731,13 @@ async function loadWords() {
         if (!seenEmbedded.has(key)) {
           seenEmbedded.add(key);
           if (!existingKeys.has(key)) {
-            words.push({...ew});
+            words.push({...srsDefaults(), ...ew});
             newWordKeys.add(key);
             changed = true;
           }
         } else if (!existingKeys.has(key)) {
           // seenEmbedded엔 있지만 words에 없는 경우 (Firebase 쓰기 오류로 누락된 단어 복구)
-          words.push({...ew});
+          words.push({...srsDefaults(), ...ew});
           newWordKeys.add(key);
           changed = true;
         }
@@ -551,10 +748,19 @@ async function loadWords() {
       EMBEDDED_WORDS.forEach(ew => { embeddedMap[ew.word.toLowerCase()] = ew; });
       words.forEach(w => {
         const ew = embeddedMap[w.word.toLowerCase()];
-        if (!ew) return;
-        if (!w.week && ew.week) { w.week = ew.week; changed = true; }
-        if (!w.synonyms && ew.synonyms) { w.synonyms = ew.synonyms; changed = true; }
-        if (!w.antonyms && ew.antonyms) { w.antonyms = ew.antonyms; changed = true; }
+        if (ew) {
+          if (!w.week && ew.week) { w.week = ew.week; changed = true; }
+          if (!w.synonyms && ew.synonyms) { w.synonyms = ew.synonyms; changed = true; }
+          if (!w.antonyms && ew.antonyms) { w.antonyms = ew.antonyms; changed = true; }
+        }
+        // 기존 단어에 SRS 필드 백필 (게임화 기능 추가 이전에 저장된 단어용)
+        if (w.srsStage === undefined) {
+          w.srsStage = 0;
+          w.nextReviewDate = w.nextReviewDate || today();
+          w.lastReviewDate = w.lastReviewDate ?? null;
+          w.everMastered = w.mastered === true;
+          changed = true;
+        }
       });
 
       if (changed) {
@@ -576,10 +782,472 @@ function saveWords() {
 function clearAllWords() {
   if(!confirm('모든 단어를 삭제할까요?')) return;
   newWordKeys = new Set();
-  words = EMBEDDED_WORDS.map(w => ({...w}));
+  words = EMBEDDED_WORDS.map(w => ({...srsDefaults(), ...w}));
   const seenArr = words.map(w => w.word.toLowerCase());
   DOC.set({ words, seenEmbedded: seenArr, newWordKeys: [] }).catch(console.error);
   renderAll(); toast('초기화 완료');
+}
+
+// ============================================================
+// GAME STATE (게임화: 포인트 · 강아지 키우기)
+// ============================================================
+const GAME_DOC = db.collection('alice').doc('gameState');
+let gameState = {
+  coins: 0, totalPoints: 0,
+  dog: { stage: 0, exp: 0, name: '', lastFedDate: null, poopCount: 0, lastPoopSpawn: null },
+  streak: { count: 0, lastAttendanceDate: null }
+};
+
+async function loadGameState() {
+  try {
+    const snap = await GAME_DOC.get();
+    if (!snap.exists) {
+      gameState.dog.lastPoopSpawn = new Date().toISOString();
+      await GAME_DOC.set(gameState);
+    } else {
+      gameState = { ...gameState, ...snap.data(), dog: { ...gameState.dog, ...snap.data().dog } };
+      gameState.dog.stage = dogStageIndex(gameState.dog.exp); // exp 기준으로 stage 필드 자가 교정
+      if (!gameState.dog.lastPoopSpawn) gameState.dog.lastPoopSpawn = new Date().toISOString(); // 기존 저장분 백필
+    }
+  } catch(e) { console.error('게임 상태 로드 오류:', e); }
+  renderGameWidget();
+}
+
+function saveGameState() {
+  GAME_DOC.set(gameState, { merge: true }).catch(console.error);
+}
+
+function awardPoints(amount) {
+  gameState.coins += amount;
+  gameState.totalPoints += amount;
+  saveGameState();
+  renderGameWidget();
+}
+
+// 단어를 처음으로 습득완료 처리할 때만 +5P 지급 (호출 경로 무관, 1회 한정)
+// 반환값: 이번 호출에서 첫 습득 보너스를 지급했는지 여부
+function markMastered(w) {
+  if (w.mastered && w.everMastered) return false;
+  w.mastered = true;
+  if (!w.everMastered) {
+    w.everMastered = true;
+    awardPoints(5);
+    return true;
+  }
+  return false;
+}
+
+// ── 출석 스트릭: 하루 1회 이상 퀴즈/복습 시 +5P, 7일 연속마다 +20P 보너스 ──
+function checkAttendance() {
+  const t = today();
+  if (gameState.streak.lastAttendanceDate === t) return; // 오늘 이미 출석 처리됨
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const yesterday = y.toISOString().slice(0,10);
+  gameState.streak.count = (gameState.streak.lastAttendanceDate === yesterday) ? gameState.streak.count + 1 : 1;
+  gameState.streak.lastAttendanceDate = t;
+  let bonus = 5;
+  const milestone = gameState.streak.count > 0 && gameState.streak.count % 7 === 0;
+  if (milestone) bonus += 20;
+  awardPoints(bonus);
+  toast(`📅 출석 체크! +${bonus}P (연속 ${gameState.streak.count}일째)`);
+  if (milestone) launchConfetti();
+}
+
+// ── 애니메이션 ──
+function showFloatingPoints(amount, x, y) {
+  if (!amount) return;
+  const el = document.createElement('div');
+  el.className = 'float-point';
+  el.textContent = `+${amount}P`;
+  el.style.left = (x - 20) + 'px';
+  el.style.top = (y - 20) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function launchConfetti(count) {
+  const colors = ['#e74c3c','#f39c12','#27ae60','#4a90d9','#9b59b6'];
+  for (let i = 0; i < (count || 30); i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = (Math.random()*0.3) + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
+  }
+}
+
+// ── SRS(에빙하우스) 복습 간격: stage 1~5 도달 시 +일수, stage 6 = 졸업 ──
+const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
+
+function advanceSrs(w) {
+  const newStage = Math.min((w.srsStage||0) + 1, 6);
+  w.srsStage = newStage;
+  w.lastReviewDate = today();
+  if (newStage >= 6) {
+    w.nextReviewDate = null; // 복습 졸업
+  } else {
+    const d = new Date();
+    d.setDate(d.getDate() + REVIEW_INTERVALS[newStage - 1]);
+    w.nextReviewDate = d.toISOString().slice(0,10);
+  }
+}
+
+function regressSrs(w) {
+  w.srsStage = Math.max((w.srsStage||0) - 1, 0);
+  w.lastReviewDate = today();
+  w.mastered = false;
+  w.nextReviewDate = today(); // 다음 세션에 다시 나오도록
+}
+
+// ── 강아지 성장 단계 ──
+const DOG_STAGES = [
+  { name: '아기 강아지',   emoji: '🐣',  req: 0 },
+  { name: '어린 강아지',   emoji: '🐶',  req: 50 },
+  { name: '청소년 강아지', emoji: '🐕',  req: 150 },
+  { name: '다 자란 강아지', emoji: '🐕‍🦺', req: 300 },
+  { name: '챔피언 강아지', emoji: '🏆🐕', req: 500 }
+];
+const FEED_ITEMS = [
+  { id: 'gum',     emoji: '🦴', label: '🦴 개껌',        cost: 8,  exp: 8,  reaction: 'chewing'   },
+  { id: 'sausage', emoji: '🌭', label: '🌭 소시지 간식', cost: 20, exp: 18, reaction: 'sparkling' },
+  { id: 'steak',   emoji: '🥩', label: '🥩 프리미엄 스테이크', cost: 45, exp: 40, reaction: 'ecstatic' }
+];
+const WALK_COST = 30, WALK_EXP = 15;
+const NAP_COST = 12, NAP_EXP = 10;
+const POOP_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3시간마다 1개
+const POOP_MAX = 3;
+const POOP_PENALTY_FACTOR = 0.8; // 응가 방치 시 exp 20% 감소
+
+function dogStageIndex(exp) {
+  let idx = 0;
+  DOG_STAGES.forEach((s, i) => { if (exp >= s.req) idx = i; });
+  return idx;
+}
+
+function poopPenaltyActive() { return (gameState.dog.poopCount || 0) > 0; }
+function expFactor() { return poopPenaltyActive() ? POOP_PENALTY_FACTOR : 1; }
+
+// 마지막 체크 이후 흐른 시간만큼 응가를 채워넣음 (최대 POOP_MAX)
+function checkPoopSpawn() {
+  const d = gameState.dog;
+  if ((d.poopCount || 0) >= POOP_MAX) return;
+  const last = d.lastPoopSpawn ? new Date(d.lastPoopSpawn).getTime() : Date.now();
+  const elapsed = Date.now() - last;
+  const newPoops = Math.floor(elapsed / POOP_INTERVAL_MS);
+  if (newPoops > 0) {
+    d.poopCount = Math.min(POOP_MAX, (d.poopCount || 0) + newPoops);
+    d.lastPoopSpawn = new Date(last + newPoops * POOP_INTERVAL_MS).toISOString();
+    saveGameState();
+  }
+}
+
+function cleanupPoop(idx) {
+  gameState.dog.poopCount = Math.max(0, (gameState.dog.poopCount || 0) - 1);
+  gameState.dog.lastPoopSpawn = new Date().toISOString(); // 치운 시점부터 다시 카운트
+  saveGameState();
+  awardPoints(2);
+  renderPet();
+  toast('🧹 응가를 치웠어요! +2코인');
+}
+
+// exp를 더하고 레벨업 여부를 반환 (레벨업 시 컨페티 + 토스트는 여기서 처리)
+function applyDogExp(exp) {
+  const prevStageIdx = dogStageIndex(gameState.dog.exp);
+  gameState.dog.exp += exp;
+  const newStageIdx = dogStageIndex(gameState.dog.exp);
+  gameState.dog.stage = newStageIdx;
+  if (newStageIdx > prevStageIdx) {
+    launchConfetti(50);
+    playLevelUpPop();
+    showLevelUpBanner(DOG_STAGES[newStageIdx].name);
+    toast(`🎉 ${DOG_STAGES[newStageIdx].name}(으)로 성장했어요!`);
+    return true;
+  }
+  return false;
+}
+
+function playLevelUpPop() {
+  const walker = document.getElementById('petWalker');
+  if (!walker) return;
+  walker.classList.remove('leveling-up');
+  void walker.offsetWidth; // 리플로우 강제 — 애니메이션 재시작
+  walker.classList.add('leveling-up');
+  setTimeout(() => walker.classList.remove('leveling-up'), 900);
+}
+
+function showLevelUpBanner(stageName) {
+  const yard = document.getElementById('petYard');
+  if (!yard) return;
+  const el = document.createElement('div');
+  el.className = 'levelup-banner';
+  el.innerHTML = `⭐ LEVEL UP! ⭐<br><span style="font-size:.65em">${stageName}</span>`;
+  yard.appendChild(el);
+  setTimeout(() => el.remove(), 1600);
+}
+
+function renderGameWidget() {
+  const stage = DOG_STAGES[dogStageIndex(gameState.dog.exp)];
+  document.getElementById('miniDogEmoji').textContent = stage.emoji;
+  document.getElementById('miniDogStage').textContent = gameState.dog.name || stage.name;
+  document.getElementById('miniCoins').textContent = gameState.coins;
+}
+
+const DOG_SCALES = [0.6, 0.72, 0.85, 1.0, 1.12]; // 성장 단계별 몸집 크기
+
+function renderPoops() {
+  const layer = document.getElementById('poopLayer');
+  layer.innerHTML = '';
+  const count = gameState.dog.poopCount || 0;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'poop';
+    el.textContent = '💩';
+    el.style.left = (12 + i * 32 + (i % 2) * 12) + '%';
+    el.onclick = () => cleanupPoop(i);
+    layer.appendChild(el);
+  }
+}
+
+function renderPet() {
+  checkPoopSpawn();
+  renderPoops();
+  const stageIdx = dogStageIndex(gameState.dog.exp);
+  const stage = DOG_STAGES[stageIdx];
+  const next = DOG_STAGES[stageIdx + 1];
+  const dogScale = document.getElementById('dogScale');
+  dogScale.style.transformOrigin = '118px 140px';
+  dogScale.style.transform = `scale(${DOG_SCALES[stageIdx]})`;
+  document.getElementById('accBandana').style.display = stageIdx >= 1 ? '' : 'none';
+  document.getElementById('accCollar').style.display = stageIdx >= 2 ? '' : 'none';
+  document.getElementById('accFlower').style.display = stageIdx >= 3 ? '' : 'none';
+  document.getElementById('dogCrown').style.display = (stageIdx >= DOG_STAGES.length - 1) ? '' : 'none';
+  document.getElementById('petWalker').classList.toggle('dirty', poopPenaltyActive());
+  document.getElementById('petNameForm').style.display = gameState.dog.name ? 'none' : '';
+  document.getElementById('petNameInput').value = gameState.dog.name || '';
+  document.getElementById('petCoins').textContent = gameState.coins;
+  if (next) {
+    const span = next.req - stage.req;
+    const progressed = gameState.dog.exp - stage.req;
+    document.getElementById('petStageLabel').textContent = `${gameState.dog.name ? gameState.dog.name+' · ' : ''}${stage.name}`;
+    document.getElementById('petExpBar').style.width = Math.min(100, Math.round(progressed/span*100)) + '%';
+    document.getElementById('petExpLabel').textContent = `${gameState.dog.exp} / ${next.req} exp — 다음 단계(${next.name})까지 ${next.req - gameState.dog.exp} exp`;
+  } else {
+    document.getElementById('petStageLabel').textContent = `${gameState.dog.name ? gameState.dog.name+' · ' : ''}${stage.name}`;
+    document.getElementById('petExpBar').style.width = '100%';
+    document.getElementById('petExpLabel').textContent = `${gameState.dog.exp} exp — 최고 단계 달성! 🏆`;
+  }
+}
+
+// ── 강아지가 마당을 돌아다니고 가끔 장난치는 애니메이션 (펫 탭이 열려있을 때만 동작) ──
+let petWalkTimer = null, petPlayTimer = null, isNapping = false;
+
+function startPetWalk() {
+  if (isNapping) return; // 낮잠 중엔 돌아다니지 않음
+  stopPetWalk();
+  document.getElementById('petWalker')?.classList.add('walking');
+  petWander();
+  petWalkTimer = setInterval(petWander, 3200);
+  petPlayTimer = setInterval(() => { if (Math.random() < 0.4) petPlay(); }, 4500);
+}
+
+function stopPetWalk() {
+  clearInterval(petWalkTimer); petWalkTimer = null;
+  clearInterval(petPlayTimer); petPlayTimer = null;
+  document.getElementById('petWalker')?.classList.remove('walking');
+}
+
+function petWander() {
+  const yard = document.getElementById('petYard');
+  const walker = document.getElementById('petWalker');
+  if (!yard || !walker) return;
+  const maxLeft = Math.max(10, yard.clientWidth - walker.clientWidth - 10);
+  const current = parseFloat(walker.style.left) || 10;
+  const target = Math.random() * maxLeft;
+  walker.classList.toggle('facing-left', target < current);
+  walker.style.left = target + 'px';
+}
+
+function petPlay() {
+  const walker = document.getElementById('petWalker');
+  if (!walker) return;
+  walker.classList.remove('playing');
+  void walker.offsetWidth; // 리플로우 강제 — 애니메이션 재시작
+  walker.classList.add('playing');
+  setTimeout(() => walker.classList.remove('playing'), 700);
+}
+
+function showHeart() {
+  const walker = document.getElementById('petWalker');
+  const rect = walker.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'float-point';
+  el.textContent = '💕';
+  el.style.left = (rect.left + rect.width/2 - 12) + 'px';
+  el.style.top = (rect.top - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function playReaction(type) {
+  const walker = document.getElementById('petWalker');
+  if (!walker) return;
+  if (type === 'ecstatic') { petPlay(); return; }
+  walker.classList.remove(type);
+  void walker.offsetWidth; // 리플로우 강제 — 애니메이션 재시작
+  walker.classList.add(type);
+  setTimeout(() => walker.classList.remove(type), type === 'chewing' ? 1000 : 900);
+  if (type === 'sparkling') showHeart();
+}
+
+// 강아지를 마당 안 특정 x 위치(px)로 걸어가게 함. 도착하면 callback 실행
+function walkTo(targetLeft, callback) {
+  const walker = document.getElementById('petWalker');
+  const current = parseFloat(walker.style.left) || 10;
+  walker.classList.toggle('facing-left', targetLeft < current);
+  walker.classList.add('walking');
+  walker.style.transition = 'left .9s ease-in-out';
+  walker.style.left = targetLeft + 'px';
+  setTimeout(() => {
+    walker.classList.remove('walking');
+    walker.style.transition = ''; // 평소 배회 속도(3.2s)로 복귀
+    if (callback) callback();
+  }, 950);
+}
+
+function resumeAmbientWalk() {
+  if (!isNapping && document.getElementById('panel-pet').classList.contains('active')) startPetWalk();
+}
+
+// 먹이가 하늘에서 마당 랜덤 위치로 떨어지고, 강아지가 그쪽으로 걸어가서 먹는다
+function feedItem(itemId) {
+  const item = FEED_ITEMS.find(f => f.id === itemId);
+  if (!item) return;
+  if (isNapping) { toast('강아지가 자고 있어요 😴'); return; }
+  if (gameState.coins < item.cost) { toast('코인이 부족해요! 학습해서 더 모아보세요 🪙'); return; }
+  gameState.coins -= item.cost;
+  gameState.dog.lastFedDate = today();
+  saveGameState(); renderGameWidget();
+
+  stopPetWalk();
+  const yard = document.getElementById('petYard');
+  const walker = document.getElementById('petWalker');
+  const maxLeft = Math.max(10, yard.clientWidth - walker.clientWidth - 10);
+  const targetLeft = Math.random() * maxLeft;
+
+  const food = document.createElement('div');
+  food.className = 'falling-food';
+  food.textContent = item.emoji;
+  food.style.left = (targetLeft + walker.clientWidth / 2 - 14) + 'px';
+  yard.appendChild(food);
+
+  setTimeout(() => {
+    walkTo(targetLeft, () => {
+      food.remove();
+      const exp = Math.round(item.exp * expFactor());
+      const leveledUp = applyDogExp(exp);
+      saveGameState();
+      renderPet(); renderGameWidget();
+      playReaction(item.reaction);
+      if (!leveledUp) toast(`${item.label} 냠냠! (+${exp} exp)`);
+      resumeAmbientWalk();
+    });
+  }, 650); // 낙하 애니메이션(.65s)이 끝난 뒤 이동 시작
+}
+
+function walkDog() {
+  if (isNapping) { toast('강아지가 자고 있어요 😴'); return; }
+  if (gameState.coins < WALK_COST) { toast('코인이 부족해요! 학습해서 더 모아보세요 🪙'); return; }
+  gameState.coins -= WALK_COST;
+  saveGameState(); renderGameWidget();
+
+  stopPetWalk();
+  const walker = document.getElementById('petWalker');
+  const yard = document.getElementById('petYard');
+  const maxLeft = Math.max(10, yard.clientWidth - walker.clientWidth - 10);
+  walker.classList.add('excited');
+  let laps = 0;
+  const doLap = () => {
+    const current = parseFloat(walker.style.left) || 10;
+    const target = Math.random() * maxLeft;
+    walker.classList.toggle('facing-left', target < current);
+    walker.style.left = target + 'px';
+    laps++;
+    if (laps < 4) {
+      setTimeout(doLap, 850);
+    } else {
+      walker.classList.remove('excited');
+      const exp = Math.round(WALK_EXP * expFactor());
+      const leveledUp = applyDogExp(exp);
+      saveGameState();
+      renderPet(); renderGameWidget();
+      if (!leveledUp) toast(`🚶 산책하고 왔어요! (+${exp} exp)`);
+      resumeAmbientWalk();
+    }
+  };
+  doLap();
+}
+
+function napDog() {
+  if (isNapping) return;
+  if (gameState.coins < NAP_COST) { toast('코인이 부족해요! 학습해서 더 모아보세요 🪙'); return; }
+  gameState.coins -= NAP_COST;
+  const exp = Math.round(NAP_EXP * expFactor());
+  const leveledUp = applyDogExp(exp);
+  saveGameState();
+  isNapping = true;
+  stopPetWalk();
+  document.getElementById('dogRig').style.display = 'none';
+  document.getElementById('dogRigSleep').style.display = '';
+  document.getElementById('dogZzz').style.display = '';
+  renderPet(); renderGameWidget();
+  if (!leveledUp) toast(`😴 낮잠을 잤어요! (+${exp} exp)`);
+  setTimeout(() => {
+    isNapping = false;
+    document.getElementById('dogRig').style.display = '';
+    document.getElementById('dogRigSleep').style.display = 'none';
+    document.getElementById('dogZzz').style.display = 'none';
+    renderPet();
+    resumeAmbientWalk();
+  }, 4000);
+}
+
+function setDogName() {
+  const val = document.getElementById('petNameInput').value.trim();
+  if (!val) return;
+  gameState.dog.name = val;
+  saveGameState();
+  renderPet(); renderGameWidget();
+  toast(`이름을 "${val}"(으)로 정했어요!`);
+}
+
+// ============================================================
+// REVIEW (에빙하우스 복습)
+// ============================================================
+function dueReviewWords() {
+  const t = today();
+  return words.filter(w => (w.srsStage||0) < 6 && (!w.nextReviewDate || w.nextReviewDate <= t));
+}
+
+function renderReviewSummary() {
+  const due = dueReviewWords();
+  document.getElementById('reviewSummary').textContent = due.length
+    ? `오늘 복습할 단어: ${due.length}개`
+    : '오늘 복습할 단어가 없어요! 🎉';
+  document.getElementById('startReviewBtn').style.display = due.length ? 'inline-block' : 'none';
+}
+
+function startReview() {
+  const due = dueReviewWords();
+  if (!due.length) { toast('오늘 복습할 단어가 없어요! 🎉'); return; }
+  quizContext = 'srsReview';
+  qWords = shuffle(due); qIdx=0; qScore=0; qWrong=[];
+  document.getElementById('quizSetup').style.display='none';
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizRun').style.display='block';
+  switchTab('quiz', document.querySelectorAll('.tab')[3]);
+  renderQuestion();
 }
 
 // ============================================================
@@ -644,6 +1312,8 @@ function switchTab(id, el) {
   if(el) el.classList.add('active');
   if(id==='list') renderList();
   if(id==='flash') document.getElementById('fcArea').innerHTML = '<div class="empty-msg">위에서 시작 버튼을 눌러주세요</div>';
+  if(id==='review') renderReviewSummary();
+  if(id==='pet') { renderPet(); startPetWalk(); } else { stopPetWalk(); }
 }
 
 // ============================================================
@@ -743,7 +1413,12 @@ function renderList() {
 }
 
 function clearNewBadge() { newWordKeys.clear(); saveWords(); renderList(); }
-function toggleMastered(i) { words[i].mastered = !words[i].mastered; saveWords(); renderList(); toast(words[i].mastered?'✅ 습득 완료!':'❌ 학습 중으로 변경'); }
+function toggleMastered(i) {
+  const w = words[i];
+  if (w.mastered) { w.mastered = false; } else { markMastered(w); }
+  saveWords(); renderList();
+  toast(w.mastered ? '✅ 습득 완료!' : '❌ 학습 중으로 변경');
+}
 function deleteWord(i) {
   if(!confirm(`"${words[i].word}" 삭제할까요?`)) return;
   words.splice(i, 1);
@@ -757,7 +1432,7 @@ function addWord() {
   const word = document.getElementById('aWord').value.trim();
   const meaning = document.getElementById('aMeaning').value.trim();
   if(!word || !meaning) { toast('단어와 뜻을 입력해주세요'); return; }
-  words.push({ word, meaning,
+  words.push({ ...srsDefaults(), word, meaning,
     pos: document.getElementById('aPos').value,
     week: document.getElementById('aWeek').value.trim() || '기타',
     example: document.getElementById('aExample').value.trim(),
@@ -845,7 +1520,9 @@ function fcNav(d) { fcIdx = Math.max(0, Math.min(fcWords.length-1, fcIdx+d)); re
 // QUIZ
 // ============================================================
 let qWords=[], qIdx=0, qScore=0, qWrong=[], qAnswered=false;
+let quizContext = 'normal'; // 'normal' | 'wrongRepeat' — 정답 시 지급 포인트 구분용
 function startQuiz() {
+  quizContext = 'normal';
   const filter = document.getElementById('qFilter').value;
   const weekPool = filterByWeek([...words]);
   const count  = Math.min(parseInt(document.getElementById('qCount').value)||10, weekPool.length);
@@ -920,20 +1597,37 @@ function checkAnswer(btn, chosen, correct) {
     b.disabled = true;
     if(b.textContent === correctLabel) b.classList.add('correct');
   });
+  let earned = 0, masteryBonus = false, graduated = false;
   if(isCorrect) {
     qScore++; btn.classList.add('correct');
-    w.mastered = true;                          // 맞으면 습득완료
+    if (quizContext === 'srsReview') {
+      earned = 3 * ((w.srsStage||0) + 1);       // 오래 기억한 단어일수록 가중치↑
+      advanceSrs(w);
+      if (w.srsStage >= 6) { graduated = true; masteryBonus = markMastered(w); } // 복습 졸업 시 최초 습득 보너스 체크
+    } else {
+      masteryBonus = markMastered(w);           // 맞으면 습득완료 (+최초 습득 시 5P)
+      earned = quizContext === 'wrongRepeat' ? 3 : 2;
+    }
+    awardPoints(earned);
+    const rect = btn.getBoundingClientRect();
+    showFloatingPoints(earned + (masteryBonus ? 5 : 0), rect.left + rect.width/2, rect.top);
+    if (graduated) launchConfetti();            // SRS 졸업 축하
     saveWords();
   } else {
     btn.classList.add('wrong');
     qWrong.push(w);
     w.wrong = (w.wrong||0)+1;
-    w.mastered = false;                         // 틀리면 학습중
+    if (quizContext === 'srsReview') {
+      regressSrs(w);                            // 틀리면 SRS 단계 되돌림
+    } else {
+      w.mastered = false;                       // 틀리면 학습중
+    }
     saveWords();
   }
+  checkAttendance();                            // 오늘 첫 학습이면 출석 보너스
   const fb = document.getElementById('qFeedback');
   fb.className = 'quiz-feedback show ' + (isCorrect?'correct':'wrong');
-  fb.textContent = isCorrect ? '✅ 정답!' : `❌ 오답! 정답: "${type==='w2p'?w.pos:type==='synant'?correct:type==='w2m'?w.meaning:w.word}"`;
+  fb.textContent = isCorrect ? `✅ 정답! (+${earned}P)` : `❌ 오답! 정답: "${type==='w2p'?w.pos:type==='synant'?correct:type==='w2m'?w.meaning:w.word}"`;
   document.getElementById('qNext').style.display='block';
 }
 function nextQuestion() { qIdx++; if(qIdx>=qWords.length) showResult(); else renderQuestion(); }
@@ -962,6 +1656,7 @@ function startWrong() {
     renderFlash();
   } else {
     if(pool.length<4) { toast('오답 단어가 최소 4개 필요합니다'); return; }
+    quizContext = 'wrongRepeat';
     qWords=shuffle(pool); qIdx=0; qScore=0; qWrong=[];
     document.getElementById('quizSetup').style.display='none';
     document.getElementById('quizResult').style.display='none';
@@ -985,7 +1680,7 @@ function importWords() {
       const key = parts[0].toLowerCase();
       const exists = words.find(w=>w.word.toLowerCase()===key);
       if(!exists) {
-        words.push({ word:parts[0], meaning:parts[1], pos:parts[2]||'', example:parts[3]||'', date:parts[4]||today(), wrong:parseInt(parts[5])||0, mastered:false });
+        words.push({ ...srsDefaults(), word:parts[0], meaning:parts[1], pos:parts[2]||'', example:parts[3]||'', date:parts[4]||today(), wrong:parseInt(parts[5])||0, mastered:false });
         count++;
       }
     }
@@ -1003,13 +1698,14 @@ function exportCSV() {
   toast('📤 CSV 내보내기 완료');
 }
 
-function renderAll() { updateStats(); refreshWeekTabs(); renderList(); }
+function renderAll() { updateStats(); refreshWeekTabs(); renderList(); renderReviewSummary(); renderGameWidget(); }
 
 // ============================================================
 // INIT
 // ============================================================
 document.getElementById('aDate').value = today();
 loadWords(); // async — 완료 후 내부에서 renderAll() 호출
+loadGameState(); // async — 게임 상태(포인트/강아지) 로드
 
 // 서비스 워커 등록 (PWA 설치 지원)
 if ('serviceWorker' in navigator) {
